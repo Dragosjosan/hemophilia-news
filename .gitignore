@@ -216,3 +216,24 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- news.josan.ai ---
+# Local SQLite data and backups (keep the folder)
+data/*
+!data/.gitkeep
+*.db
+*.db-shm
+*.db-wal
+
+# Real environment files; only *.example is committed
+.env.*
+!.env.example
+*.local.*
+
+# Rendered deploy files with real values
+deploy/**/*.rendered
+deploy/**/*.conf
+!deploy/**/*.conf.template
+
+# Node
+node_modules/
