@@ -116,8 +116,8 @@ Pinned on 2026-10-04.
 ```
 news/
 ├── backend/                 news-api: FastAPI, level8 layout
-├── frontend/                React + TypeScript + Vite (npm)
-├── agents/                  one Python package; frameworks are swappable runtimes
+├── frontend/                React + TypeScript + Vite (bun)
+├── agents/                  one self-contained implementation per framework (maf/, langchain/ …)
 ├── deploy/                  public, parametrized templates only (see "Open source")
 ├── .github/workflows/       backend.yml, frontend.yml, agents.yml
 ├── data/                    local SQLite files (gitignored)
@@ -144,35 +144,35 @@ tests/unit  tests/property  tests/api
 This is level8's layout, except that `models` and `repositories` are packages
 because there are about eight entities.
 
-**agents/**: one package, `news_agents`. There is no separate "core" package.
-The framework-free code is the package itself, and each agent framework is a
-runtime subpackage, installed as an optional extra and shipped as its own image.
+**agents/**: one self-contained folder per agent framework. There is no shared
+code between them; every implementation uses a framework fully. They exist side
+by side so the frameworks can be built and evaluated against each other.
 ```
-config/topics.yaml
-src/news_agents/
-  domain/          Candidate, Decision, EditorVerdict, Topic
-  ports/           Protocols: ChatModel, Scout, Editor, Judge, Search, NewsApi
-  pipeline/        deterministic: canonical_url dedup gate provenance budget run
-  scouts/          API/RSS scouts: clinicaltrials pubmed openfda arxiv hn rss x …
-  clients/         exa, jev, news_api (+ generated news_api_models.py)
-  harvest/         SQLAlchemy models + repository
-  config.py
-  runtimes/
-    maf/           main.py orchestrator.py editor.py llm_scouts.py models.py
-    langchain/     (later) the same five files on LangChain
-migrations/        harvest Alembic
-tests/
+agents/
+  config/topics.yaml           shared input: topics, scouts, queries, source tiers
+  maf/                         Microsoft Agent Framework implementation
+    pyproject.toml uv.lock Dockerfile
+    src/news_agents_maf/
+      main.py                  entrypoint: one run, exit code
+      orchestrator.py          MAF workflow: scout → dedup → editor → publisher
+      domain/                  Candidate, Decision, EditorVerdict
+      scouts/                  API/RSS and LLM-driven scouts
+      dedup/                   canonical_url, shortlist, Jev judge
+      editor/                  editor agent, Exa tools, publish gate, provenance
+      publisher/               cap check, news-api POST
+      clients/                 exa, jev, news_api (+ generated news_api_models.py)
+      harvest/                 SQLAlchemy models + repository
+      config.py
+    migrations/                harvest Alembic
+    tests/
+  langchain/                   (later) the same shape, on LangChain
 ```
-- The rule is **the package decides, the runtime thinks.** Dedup, the gate,
-  scoring, the budget, harvest and API scouts are framework-free. A runtime only
-  implements the `Editor` port, any LLM-driven scouts, and the orchestration
-  wiring.
-- `pyproject.toml` extras: `maf` (agent-framework), later `langchain`. The
-  Dockerfile takes `ARG RUNTIME=maf`, so each runtime is a separate image and
-  container. Only one runs at a time, and it owns `harvest.db`.
-- import-linter in CI: only `news_agents.runtimes.maf` may import
-  `agent_framework`, only `runtimes.langchain` may import `langchain`, and nothing
-  imports `backend`.
+- Each implementation is its own uv project, image and container, with its own
+  `harvest.db`. Only one publishes to production at a time.
+- For evaluation, the others run with `DRY_RUN=1`: the full pipeline runs, but
+  instead of POSTing they record what they *would* publish. On the same
+  `topics.yaml`, implementations can then be compared on what they publish,
+  duplicates caught, gate rejections, cost and runtime, all from `runs.stats`.
 
 **frontend/**
 ```
@@ -190,7 +190,7 @@ There is no committed OpenAPI file. FastAPI produces the schema from the code
 `make gen-types` reads it straight from the app object, with no server running:
 - `openapi-typescript` generates `frontend/src/api/schema.d.ts`.
 - `datamodel-code-generator` generates
-  `agents/src/news_agents/clients/news_api_models.py`.
+  `clients/news_api_models.py` in every agents implementation.
 
 The generated files are committed next to their consumers. CI regenerates them
 and fails on any diff, so a backend change that breaks the frontend or the agents

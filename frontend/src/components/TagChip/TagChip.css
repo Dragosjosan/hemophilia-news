@@ -1,0 +1,22 @@
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.tag-chip:hover {
+  color: var(--ink);
+  border-color: var(--control-border);
+}
+
+.tag-chip[aria-current='true'] {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}

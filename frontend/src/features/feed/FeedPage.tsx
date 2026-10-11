@@ -1,0 +1,49 @@
+import { useSearchParams } from 'react-router'
+import { EmptyState, ErrorState, LoadingState } from '../../components/AsyncState/AsyncState.tsx'
+import ItemList from './components/ItemList.tsx'
+import TagFilter from './components/TagFilter.tsx'
+import { useFeed } from './useFeed.ts'
+import { useLoadMoreOnScroll } from './useLoadMoreOnScroll.ts'
+import './FeedPage.css'
+
+function FeedPage() {
+  const [searchParams] = useSearchParams()
+  const topic = searchParams.get('topic') ?? undefined
+  const tag = searchParams.get('tag') ?? undefined
+
+  const feed = useFeed({ topic, tag })
+  const sentinel = useLoadMoreOnScroll<HTMLDivElement>(
+    feed.loadMore,
+    feed.hasMore && feed.status === 'idle',
+  )
+  const isFirstLoad = feed.status === 'loading' && feed.items.length === 0
+
+  return (
+    <div className="feed-page">
+      <TagFilter topic={topic} tag={tag} />
+
+      {isFirstLoad && <LoadingState label="Loading stories" />}
+      {feed.status === 'idle' && feed.items.length === 0 && (
+        <EmptyState title="No stories yet." copy="New items appear here as soon as they are published." />
+      )}
+      {feed.items.length > 0 && <ItemList items={feed.items} />}
+
+      {feed.status === 'error' && feed.error && (
+        <ErrorState title="Could not load stories." error={feed.error} />
+      )}
+      {feed.hasMore && (
+        <div ref={sentinel} className="feed-more">
+          {feed.status === 'loading' ? (
+            <LoadingState label="Loading more" />
+          ) : (
+            <button type="button" className="btn" onClick={feed.loadMore}>
+              More
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default FeedPage

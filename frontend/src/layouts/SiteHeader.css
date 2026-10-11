@@ -1,0 +1,40 @@
+.site-header {
+  border-bottom: 1px solid var(--hairline);
+  background: var(--surface);
+  padding-block: var(--space-3);
+}
+
+.site-header-inner {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+}
+
+.site-brand {
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-lg);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.site-nav-link {
+  font-size: var(--text-md);
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.site-nav-link:hover,
+.site-nav-link[aria-current='page'] {
+  color: var(--ink);
+}
+
+.site-nav-link[aria-current='page'] {
+  font-weight: var(--weight-medium);
+}

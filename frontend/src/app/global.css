@@ -1,0 +1,7 @@
+/* App-wide rules only. The design system (src/design) owns tokens and components. */
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
