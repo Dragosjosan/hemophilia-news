@@ -24,10 +24,10 @@ lint:
 	cd agents/maf && uv run ruff check . && uv run mypy src
 	cd frontend && bun run lint
 
-build-fe:
+build:
 	$(COMPOSE) build
 
-run-fe:
+run:
 	$(COMPOSE) up -d --remove-orphans
 
 down:
