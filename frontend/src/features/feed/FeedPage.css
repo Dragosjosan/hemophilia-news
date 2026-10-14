@@ -1,11 +1,21 @@
-.feed-page {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  max-width: 880px;
+.feed-empty {
+  padding: var(--space-5) 0 var(--space-5) 46px;
+  color: var(--muted);
 }
 
+/* Aligned with the titles (rank + vote columns = 46px), like HN's "More". */
 .feed-more {
-  display: flex;
-  justify-content: center;
+  padding: var(--space-2) 0 0 46px;
+}
+
+.feed-more-link {
+  all: unset;
+  color: var(--ink);
+  font-size: var(--hn-text-title);
+  cursor: pointer;
+}
+
+.feed-more-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }

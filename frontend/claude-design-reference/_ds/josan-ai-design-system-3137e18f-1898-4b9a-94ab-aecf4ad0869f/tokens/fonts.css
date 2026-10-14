@@ -1,0 +1,8 @@
+/* Josan AI — Web Fonts
+ * Primary: Inter (400/500/600/700)
+ * Monospace: JetBrains Mono (400/500)
+ * Source: Google Fonts CDN
+ * ⚠ Substitution: These are the correct typefaces but served via CDN.
+ *   For offline/production use, self-host the woff2 files and replace the @import.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');

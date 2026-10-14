@@ -1,7 +1,28 @@
-/* App-wide rules only. The design system (src/design) owns tokens and components. */
+/* App-wide rules only. The design system (josanai-design) owns tokens and components. */
+
+/* Type scale copied from Hacker News (news.ycombinator.com/news.css), which sizes in pt. */
+:root {
+  --hn-text-page: 10pt; /* body, .pagetop */
+  --hn-text-title: 10pt; /* .title: story titles, rank, "More" */
+  --hn-text-site: 8pt; /* .comhead / .yclinks: domain, footer */
+  --hn-text-sub: 7pt; /* .subtext: points, age, comments */
+  --hn-vote-size: 10px; /* .votearrow */
+}
+
+/* HN enlarges titles and subtext on phones. */
+@media (max-width: 720px) {
+  :root {
+    --hn-text-page: 12px;
+    --hn-text-title: 11pt;
+    --hn-text-sub: 9pt;
+    --hn-vote-size: 13px;
+  }
+}
+
+body {
+  font-size: var(--hn-text-page);
+}
 
 #root {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }

@@ -1,0 +1,80 @@
+/* Josan AI — Color Tokens */
+:root {
+  /* Base surfaces */
+  --color-bg: #fafbfc;
+  --color-surface: #ffffff;
+
+  /* Text / ink */
+  --color-ink: #1a1d21;
+  --color-ink-soft: #3c4148;
+  --color-muted: #6b7280;
+  --color-muted-2: #9ca3af;
+
+  /* Borders */
+  --color-hairline: #e8eaed;
+  --color-hairline-strong: #d1d5db;
+
+  /* Accent — Clinical Teal (oklch) */
+  --color-accent: oklch(0.58 0.12 210);
+  --color-accent-soft: oklch(0.96 0.02 210);
+
+  /* Semantic */
+  --color-danger: oklch(0.55 0.18 25);
+  --color-danger-soft: oklch(0.96 0.04 25);
+  --color-success: oklch(0.55 0.14 150);
+  --color-success-soft: oklch(0.96 0.04 150);
+  --color-warning: oklch(0.62 0.14 75);
+  --color-warning-soft: oklch(0.96 0.04 75);
+
+  /* Shorthand aliases — used throughout components */
+  --bg: var(--color-bg);
+  --surface: var(--color-surface);
+  --ink: var(--color-ink);
+  --ink-soft: var(--color-ink-soft);
+  --muted: var(--color-muted);
+  --muted-2: var(--color-muted-2);
+  --hairline: var(--color-hairline);
+  --hairline-strong: var(--color-hairline-strong);
+  --accent: var(--color-accent);
+  --accent-soft: var(--color-accent-soft);
+  --danger: var(--color-danger);
+  --success: var(--color-success);
+}
+
+[data-theme="dark"] {
+  --color-bg: #0f1114;
+  --color-surface: #161a1f;
+  --color-ink: #e8eaed;
+  --color-ink-soft: #c8ccd1;
+  --color-muted: #8a8f98;
+  --color-muted-2: #5c6068;
+  --color-hairline: #242830;
+  --color-hairline-strong: #32373f;
+  --color-accent-soft: oklch(0.25 0.05 210);
+}
+
+/* Document skin — monospace, zero radius, bright blue accent */
+[data-skin="document"] {
+  --color-bg: #fafafa;
+  --color-surface: #fafafa;
+  --color-ink: #0d0d0d;
+  --color-ink-soft: #202020;
+  --color-muted: #6a6a6a;
+  --color-muted-2: #9a9a9a;
+  --color-hairline: #d8d8d8;
+  --color-hairline-strong: #b8b8b8;
+  --color-accent: #1a4fff;
+  --color-accent-soft: #eef2ff;
+}
+[data-skin="document"][data-theme="dark"] {
+  --color-bg: #0e0e0e;
+  --color-surface: #0e0e0e;
+  --color-ink: #eaeaea;
+  --color-ink-soft: #c8c8c8;
+  --color-muted: #888;
+  --color-muted-2: #555;
+  --color-hairline: #2a2a2a;
+  --color-hairline-strong: #3a3a3a;
+  --color-accent: #7ea1ff;
+  --color-accent-soft: #18222e;
+}

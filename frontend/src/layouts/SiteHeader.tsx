@@ -1,34 +1,35 @@
 import { Link, useSearchParams } from 'react-router'
 import { useTopics } from '../app/topicsContext.ts'
 import { feedUrl, paths } from '../routes/paths.ts'
+import PostQuota from './PostQuota.tsx'
 import './SiteHeader.css'
 
 function SiteHeader() {
   const topicsState = useTopics()
   const [searchParams] = useSearchParams()
   const activeTopic = searchParams.get('topic')
+  const topics = topicsState.status === 'ready' ? topicsState.topics : []
 
   return (
     <header className="site-header">
-      <div className="container site-header-inner">
-        <Link to={paths.home} className="site-brand">
-          News
-        </Link>
-        {topicsState.status === 'ready' && (
-          <nav className="site-nav" aria-label="Topics">
-            {topicsState.topics.map((topic) => (
-              <Link
-                key={topic.slug}
-                to={feedUrl({ topic: topic.slug })}
-                className="site-nav-link"
-                aria-current={activeTopic === topic.slug ? 'page' : undefined}
-              >
-                {topic.name}
-              </Link>
-            ))}
-          </nav>
-        )}
-      </div>
+      <Link to={paths.home} className="site-brand">
+        news.josan.ai
+      </Link>
+
+      <nav className="site-nav" aria-label="Topics">
+        {topics.map((topic) => (
+          <Link
+            key={topic.slug}
+            to={feedUrl({ topic: topic.slug })}
+            className="site-nav-link"
+            aria-current={activeTopic === topic.slug ? 'page' : undefined}
+          >
+            {topic.slug}
+          </Link>
+        ))}
+      </nav>
+
+      <PostQuota topics={topics} />
     </header>
   )
 }

@@ -1,29 +1,22 @@
 .item-row {
   display: grid;
-  grid-template-columns: 2.5ch auto 1fr;
-  align-items: start;
-  gap: var(--space-2);
+  grid-template-columns: 26px 14px minmax(0, 1fr);
+  column-gap: 6px;
+  padding: 3px 0 5px;
 }
 
 .item-rank {
   color: var(--muted);
-  font-size: var(--text-md);
+  font-size: var(--hn-text-title);
+  line-height: 1.45;
   text-align: right;
-  font-variant-numeric: tabular-nums;
-  line-height: var(--leading-snug);
-}
-
-.item-votes {
-  display: flex;
-  flex-direction: column;
-  line-height: 1;
 }
 
 .item-vote {
-  border: 0;
-  background: none;
-  padding: 0 var(--space-1);
-  font-size: var(--text-xs);
+  all: unset;
+  font-size: var(--hn-vote-size);
+  line-height: 20px;
+  text-align: center;
   color: var(--muted-2);
   cursor: pointer;
 }
@@ -41,35 +34,33 @@
 }
 
 .item-headline {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-1) var(--space-2);
-  line-height: var(--leading-snug);
+  line-height: 1.45;
+  text-wrap: pretty;
 }
 
 .item-title {
   color: var(--ink);
-  font-size: var(--text-base);
-  font-weight: var(--weight-medium);
+  font-size: var(--hn-text-title);
   text-decoration: none;
 }
 
-.item-title:visited {
-  color: var(--muted);
+.item-title:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .item-domain {
   color: var(--muted);
-  font-size: var(--text-sm);
+  font-size: var(--hn-text-site);
 }
 
 .item-meta {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-1) var(--space-3);
-  margin-top: var(--space-1);
+  align-items: baseline;
+  gap: 0 5px;
   color: var(--muted);
-  font-size: var(--text-sm);
+  font-size: var(--hn-text-sub);
+  line-height: var(--leading-normal);
+  white-space: nowrap;
 }

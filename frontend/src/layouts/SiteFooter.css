@@ -1,0 +1,15 @@
+.site-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+  padding: 14px 0 var(--space-10);
+  border-top: 2px solid var(--accent);
+}
+
+.site-footer-note {
+  font-size: var(--hn-text-site);
+  color: var(--muted-2);
+  text-align: center;
+}

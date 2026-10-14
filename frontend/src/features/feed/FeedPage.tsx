@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router'
-import { EmptyState, ErrorState, LoadingState } from '../../components/AsyncState/AsyncState.tsx'
+import { ErrorState, LoadingState } from '../../components/AsyncState/AsyncState.tsx'
 import ItemList from './components/ItemList.tsx'
 import TagFilter from './components/TagFilter.tsx'
 import { useFeed } from './useFeed.ts'
@@ -23,9 +23,7 @@ function FeedPage() {
       <TagFilter topic={topic} tag={tag} />
 
       {isFirstLoad && <LoadingState label="Loading stories" />}
-      {feed.status === 'idle' && feed.items.length === 0 && (
-        <EmptyState title="No stories yet." copy="New items appear here as soon as they are published." />
-      )}
+      {feed.status === 'idle' && feed.items.length === 0 && <p className="feed-empty">No posts.</p>}
       {feed.items.length > 0 && <ItemList items={feed.items} />}
 
       {feed.status === 'error' && feed.error && (
@@ -36,7 +34,7 @@ function FeedPage() {
           {feed.status === 'loading' ? (
             <LoadingState label="Loading more" />
           ) : (
-            <button type="button" className="btn" onClick={feed.loadMore}>
+            <button type="button" className="feed-more-link" onClick={feed.loadMore}>
               More
             </button>
           )}

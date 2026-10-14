@@ -1,0 +1,18 @@
+/* Josan AI — Effects: radius, shadows, transitions */
+:root {
+  --radius: 4px;
+  --radius-lg: 6px;
+  --radius-pill: 100px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 20px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
+  --shadow-panel: 0 8px 40px rgba(0,0,0,0.14);
+
+  /* Transitions */
+  --transition-fast: 0.1s ease; /* @kind other */
+  --transition-base: 0.18s ease; /* @kind other */
+  --transition-panel: 0.22s cubic-bezier(0.2, 0.8, 0.2, 1); /* @kind other */
+}

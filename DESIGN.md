@@ -622,6 +622,108 @@ Nothing is hard-deleted, and there is no retention or TTL on any table.
   click-through-rate signal would need.
 - Backups are Litestream, continuously, so "everything" survives the VPS.
 
+## Caching and Workers
+
+Status: PROPOSED on 2026-10-11. Written partly as a learning exercise, so the
+reasoning is spelled out.
+
+The site is read-heavy: for every vote or post there are hundreds of feed reads,
+and most readers see the same page. That is the ideal case for caching. A cache
+stores the answer to an expensive question so the next identical question skips
+the work. The price is that readers may see data a few seconds old.
+
+### Workers, in one paragraph
+
+A **worker** is one OS process running the FastAPI app. One process uses one CPU
+core for Python code (the GIL), so a single worker cannot use a 4-core VPS. Running
+`fastapi run --workers 4` starts four independent processes that share the port,
+so four requests are handled truly in parallel. Workers do **not** share memory:
+a Python dict filled in worker 1 is invisible to worker 2. This matters for
+caching, see "Caches and workers" below.
+
+### Where to cache: four layers, outermost first
+
+A request is answered by the first layer that has it. Each layer further in is
+slower and more expensive, so we want most requests to stop early.
+
+| # | Layer | What it caches | TTL | Staleness it costs |
+|---|-------|----------------|-----|--------------------|
+| 1 | **Browser** (frontend) | JS/CSS/fonts; `index.html` is not cached | assets: 1 year, immutable | none: file names carry a content hash |
+| 2 | **nginx `proxy_cache`** (infra) | anonymous `GET /api/v1/items` and `/topics` | 10-30 s | vote counts lag by up to the TTL |
+| 3 | **App snapshot** (backend) | the ranked list of item ids | 60 s | already pinned in "One feed, two zones" |
+| 4 | **SQLite** (database) | pages in RAM (`PRAGMA cache_size`), WAL mode | n/a | none |
+
+**1. Browser.** Vite emits `assets/app.3f9a1c.js`; the name changes whenever the
+content does, so those files get `Cache-Control: public, max-age=31536000,
+immutable`. `index.html` gets `no-cache` so a deploy is picked up on the next
+load. Set both in `frontend/nginx.conf`. This is the cheapest win and has no
+staleness risk.
+
+**2. nginx `proxy_cache` on the host.** This is the biggest lever for the API. For
+anonymous GETs, nginx keeps the response keyed on the full URL (including
+`?cursor=…&topic=…`), and for the TTL a thousand identical requests cost one
+backend call. Settings:
+- `proxy_cache_valid 200 15s;`
+- `proxy_cache_lock on;` so a burst on an expired entry sends one request to the
+  backend instead of a stampede.
+- `proxy_cache_use_stale updating error timeout;` so users get the old copy while
+  one request refreshes it, and also if the backend is down.
+- `add_header X-Cache-Status $upstream_cache_status;` to see HIT / MISS / STALE.
+
+**3. App snapshot.** Already designed under "One feed, two zones": the gravity
+order is computed once per 60 s and reused by the cursor. It also saves CPU, since
+ranking is the only non-trivial computation. The topic `remaining_today` value is
+cached for a few seconds in the same way.
+
+**4. SQLite.** Not a cache we write, but a setting we make: WAL mode so readers do
+not block the writer, and a generous page cache so hot rows stay in RAM.
+
+### Rules (what may and may not be cached)
+
+- Only **anonymous GET** responses are shared-cached. The feed and topics
+  responses carry **no per-user data** (no "you voted on this"), so one cached
+  copy is correct for everyone. Per-user state, if added later, comes from a
+  separate un-cached endpoint.
+- Never cache POST, anything with a session, or auth endpoints. nginx skips the
+  cache when a session cookie is present (`proxy_cache_bypass`).
+- news-api sends explicit headers on cacheable routes (`Cache-Control: public,
+  max-age=5, s-maxage=30`) so the policy is visible in code, not only in nginx.
+- **Invalidation is by TTL only.** No purge logic. The one exception is admin
+  delete: the item must disappear quickly, so a delete drops the app snapshot
+  and accepts at most one nginx TTL of lag.
+- Staleness budget: a vote or new post may take up to about 15 s (nginx) plus up
+  to 60 s (snapshot) to move the ranking. That is fine for a news site.
+
+### Caches and workers
+
+The snapshot cache (layer 3) lives in process memory, so with several workers each
+has its own copy, and a cursor created by worker 1 may be served by worker 2
+which has no such snapshot. Decision:
+- **Start with 1 worker.** Sync endpoints already run in a thread pool, SQLite
+  reads are fast, and layers 1-2 absorb most of the traffic. Simple and correct.
+- **Before going to N workers**, move snapshots out of process memory into a
+  shared place (a small SQLite table keyed by snapshot id with an expiry). The
+  alternative, an external Redis, is rejected for now: it adds a server for a
+  problem SQLite can solve.
+
+### How we learn from it
+
+- Log `X-Cache-Status` and compute the **hit ratio** per route. A healthy feed
+  should be above 90 %.
+- Load test (`wrk` / `hey`) with the cache off, then on, and record both
+  numbers in the README. The difference is the lesson.
+- Try the failure cases once on purpose: expire an entry under load (see
+  `proxy_cache_lock` work), stop the backend (see `use_stale` serve).
+
+### Order of work
+
+1. Browser caching headers in `frontend/nginx.conf`.
+2. `Cache-Control` headers on feed/topics routes.
+3. nginx `proxy_cache` block in `deploy/nginx/` (parametrized template).
+4. App snapshot with the ranking.
+5. SQLite pragmas, with the database work.
+6. Load test and record the hit ratio.
+
 ## Premises
 
 Settled with the user, including four where the user overrode the initial position:
