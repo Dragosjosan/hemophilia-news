@@ -1,10 +1,8 @@
 import type { Topic } from '../api/types.ts'
 import './PostQuota.css'
 
-/** Product rule: each topic accepts at most this many posts per day. */
 const DAILY_CAP = 5
 
-/** "posts today  ai ■■■□□ 3/5", one meter per topic, from `remaining_today`. */
 function PostQuota({ topics }: { topics: Topic[] }) {
   if (topics.length === 0) return null
 

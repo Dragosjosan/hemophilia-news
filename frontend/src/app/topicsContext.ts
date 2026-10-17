@@ -8,7 +8,6 @@ export type TopicsState =
 
 export const TopicsContext = createContext<TopicsState>({ status: 'loading' })
 
-/** Topics (and their tag lists) from the API, fetched once per app load. */
 export function useTopics(): TopicsState {
   return useContext(TopicsContext)
 }

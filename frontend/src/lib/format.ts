@@ -8,7 +8,6 @@ const UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
 
 const relative = new Intl.RelativeTimeFormat('en', { numeric: 'auto' })
 
-/** "3 hours ago", like the Hacker News age column. */
 export function timeAgo(iso: string, now: Date = new Date()): string {
   const seconds = Math.round((new Date(iso).getTime() - now.getTime()) / 1000)
   for (const [unit, size] of UNITS) {

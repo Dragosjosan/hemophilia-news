@@ -7,7 +7,6 @@ type TagFilterProps = {
   tag?: string
 }
 
-/** "tagged #x  clear", shown only while a tag filter is active. */
 function TagFilter({ topic, tag }: TagFilterProps) {
   if (!tag) return null
 

@@ -3,7 +3,6 @@
   color: var(--muted);
 }
 
-/* Aligned with the titles (rank + vote columns = 46px), like HN's "More". */
 .feed-more {
   padding: var(--space-2) 0 0 46px;
 }

@@ -1,13 +1,13 @@
-from fastapi import APIRouter
+from typing import Annotated
 
-from app.dto.items import FeedPageResponse
-from app.services import feed
+from fastapi import APIRouter, Query
+
+from app.api.dependencies import FeedServiceDep
+from app.dto.items import FeedPageResponse, FeedQuery
 
 router = APIRouter(prefix="/items", tags=["items"])
 
 
 @router.get("")
-def list_items(
-    topic: str | None = None, tag: str | None = None, cursor: str | None = None
-) -> FeedPageResponse:
-    return feed.get_feed_page(topic, tag, cursor)
+def list_items(query: Annotated[FeedQuery, Query()], feed: FeedServiceDep) -> FeedPageResponse:
+    return feed.get_page(query)

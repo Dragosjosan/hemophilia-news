@@ -4,6 +4,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: news-backend
+    volumes:
+      - news_data:/app/data
     healthcheck:
       test:
         - CMD
@@ -29,3 +31,6 @@ services:
       backend:
         condition: service_healthy
     restart: unless-stopped
+
+volumes:
+  news_data:

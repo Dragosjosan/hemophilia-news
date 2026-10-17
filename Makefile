@@ -1,4 +1,4 @@
-.PHONY: install test lint
+.PHONY: install test lint migrate seed
 
 .DEFAULT_GOAL := help
 
@@ -13,6 +13,12 @@ install:
 	cd backend && uv sync
 	cd agents/maf && uv sync
 	cd frontend && bun install
+
+migrate:
+	cd backend && uv run alembic upgrade head
+
+seed: migrate
+	cd backend && uv run python -m app.db.seed
 
 test:
 	cd backend && uv run pytest

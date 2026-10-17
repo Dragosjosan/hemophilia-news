@@ -12,7 +12,6 @@ function ItemRow({ item, rank }: ItemRowProps) {
     <li className="item-row">
       <span className="item-rank">{rank}.</span>
 
-      {/* Voting is wired up in a later step. */}
       <button type="button" className="item-vote" aria-label={`Upvote ${item.title}`} disabled>
         ▲
       </button>

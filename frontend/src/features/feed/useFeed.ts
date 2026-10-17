@@ -11,12 +11,10 @@ type FeedState = {
 
 const INITIAL: FeedState = { items: [], nextCursor: null, status: 'loading', error: null }
 
-/** Cursor-paginated feed (30 per page); resets whenever the filters change. */
 export function useFeed({ topic, tag }: FeedFilters) {
   const [state, setState] = useState<FeedState>(INITIAL)
   const request = useRef<AbortController | null>(null)
 
-  // Reset during render when filters change, so stale items never flash.
   const filterKey = `${topic ?? ''}|${tag ?? ''}`
   const [loadedKey, setLoadedKey] = useState(filterKey)
   if (loadedKey !== filterKey) {

@@ -8,7 +8,6 @@
   font-size: var(--text-xs);
 }
 
-/* Each "topic ■■■□□ n/5" group wraps as a whole. */
 .post-quota > * {
   white-space: nowrap;
 }

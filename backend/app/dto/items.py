@@ -3,6 +3,12 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
+class FeedQuery(BaseModel):
+    topic: str | None = None
+    tag: str | None = None
+    cursor: str | None = None
+
+
 class ItemResponse(BaseModel):
     id: int
     title: str

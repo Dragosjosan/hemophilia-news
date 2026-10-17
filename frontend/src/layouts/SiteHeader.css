@@ -32,7 +32,6 @@
   gap: 5px;
 }
 
-/* "a | b | c": the separator belongs to the link that follows it. */
 .site-nav-link + .site-nav-link::before {
   content: '|';
   margin-right: 5px;

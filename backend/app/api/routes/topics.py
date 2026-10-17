@@ -1,11 +1,11 @@
 from fastapi import APIRouter
 
+from app.api.dependencies import TopicServiceDep
 from app.dto.topics import TopicResponse
-from app.services import topics
 
 router = APIRouter(prefix="/topics", tags=["topics"])
 
 
 @router.get("")
-def list_topics() -> list[TopicResponse]:
+def list_topics(topics: TopicServiceDep) -> list[TopicResponse]:
     return topics.list_topics()

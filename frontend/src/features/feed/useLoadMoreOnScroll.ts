@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 
-/** Calls `onVisible` when the returned sentinel element scrolls near the viewport. */
 export function useLoadMoreOnScroll<T extends Element>(onVisible: () => void, enabled: boolean) {
   const sentinel = useRef<T | null>(null)
 

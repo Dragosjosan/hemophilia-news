@@ -1,6 +1,3 @@
-// Interim types mirroring DESIGN.md ("The Contract", "Feed Ranking").
-// Replace with the generated schema.d.ts once `make gen-types` exists.
-
 export type Topic = {
   slug: string
   name: string
@@ -17,7 +14,6 @@ export type FeedItem = {
   tags: string[]
   score: number
   comment_count: number
-  /** Username for human posts; null for agent posts (Product Rule: no "by" line). */
   submitted_by: string | null
   created_at: string
 }
